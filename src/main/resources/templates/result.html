@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title> Weather Result</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            background: url("https://wallpaperaccess.com/full/11748762.jpg") no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: -1;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.92);
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            margin: 20px auto;
+        }
+
+        .forecast-item {
+            background: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 8px;
+        }
+
+        a {
+            color: white;
+            font-weight: bold;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<h1> Live Weather Forecast</h1>
+
+<div class="box" th:if="${weather != null}">
+    <p>
+          City: <span th:text="${weather.city}"></span><br>
+          Temperature: <span th:text="${weather.temperature}"></span> °C<br>
+          Humidity: <span th:text="${weather.humidity}"></span>%<br>
+          Condition: <span th:text="${weather.description}"></span>
+    </p>
+</div>
+
+<div th:if="${forecast != null}">
+    <h3 style="color:white;">5 Day Forecast</h3>
+    <div th:each="f : ${forecast}" class="forecast-item">
+        <span th:text="${f.main.temp}"></span> °C —
+        <span th:text="${f.weather[0].description}"></span>
+    </div>
+</div>
+
+<div class="box" th:if="${error != null}" style="color:red;">
+    <p th:text="${error}"></p>
+</div>
+
+<a href="/">⬅ Back</a>
+<a href="/history"> View History</a>
+
+</body>
+</html>
