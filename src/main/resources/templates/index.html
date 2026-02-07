@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>🌦 Live Weather App</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            min-height: 100vh;
+            background: url("https://wallpaperaccess.com/full/11748762.jpg") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: -1;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #map {
+            height: 360px;
+            width: 90%;
+            max-width: 700px;
+            margin-top: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<h1>🌦 Live Weather Forecast</h1>
+
+<div class="box">
+    <form action="/weather" method="get">
+        <input type="text" id="cityInput" name="city" placeholder="Enter city" required>
+        <br>
+        <button type="submit">🌤 Get Weather</button>
+    </form>
+
+    <button onclick="showMap()">🗺 View Map</button>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    let map;
+    let marker;
+    let cityLatLng = null; //  stores entered city location
+
+    function showMap() {
+        const city = document.getElementById("cityInput").value.trim();
+        if (!city) {
+            alert("Please enter a city first");
+            return;
+        }
+
+        document.getElementById("map").style.display = "block";
+
+        if (!map) {
+            map = L.map('map').setView([20.5937, 78.9629], 5);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+                .addTo(map);
+
+            //  AUTO-LOCATE after zoom or drag
+            map.on("zoomend dragend", () => {
+                if (cityLatLng) {
+                    map.setView(cityLatLng, map.getZoom(), { animate: true });
+                }
+            });
+        }
+
+        fetchWeatherOnMap(city);
+    }
+
+    function fetchWeatherOnMap(city) {
+        const API_KEY = "e3595747d54613b99dc1605aa74b29b5";
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                cityLatLng = [data.coord.lat, data.coord.lon]; // 🔥 save city location
+                const temp = data.main.temp;
+                const desc = data.weather[0].description;
+
+                map.setView(cityLatLng, 11);
+
+                if (marker) marker.remove();
+
+                marker = L.marker(cityLatLng).addTo(map)
+                    .bindPopup(
+                        `<b>${city}</b><br>🌡 ${temp} °C<br>☁ ${desc}`
+                    )
+                    .openPopup();
+            })
+            .catch(() => alert("Could not load map data"));
+    }
+</script>
+
+</body>
+</html>
