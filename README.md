@@ -1,7 +1,24 @@
-#  Weather Forecasting App 
+# Weather Forecasting App 
 
-#SEE IT IN MASTER 
+A simple and responsive weather forecasting application built with JavaScript/HTML/CSS (or your actual tech stack).  
+This project fetches real-time weather data from a public API and displays current weather and forecasts for any city.
 
-A simple and interactive Spring Boot web application that lets users search for current weather conditions by city name and view a history of recent searches. This project demonstrates REST API integration, MVC architecture, and dynamic pages using Thymeleaf.
+
+##  Features
+
+✔ Search weather by city name  
+✔ Displays current weather (temperature, humidity, wind speed)  
+✔ 5-day forecast cards  
+✔ User-friendly UI with weather icons  
+✔ Mobile responsive design
+
+##  How It Works
+
+1. User enters a city.
+2. App sends request to the weather API.
+3. API returns weather data.
+4. JavaScript processes the data.
+5. UI updates with weather details.
+
 
 
